@@ -244,14 +244,9 @@ if Meteor.isClient
         out
 
 initWordsIndex = () ->
-    start = new Date()
-    console.log('Started')
-    
-    data = FS.readFileSync(PATH.resolve('./public/words.csv'), 'UTF-8')
-    lines = data.split '\n'
-    
-    i = 0    
-    lines.forEach (word) ->
+    start = new Date
+    i = 0
+    raw_words.forEach (word) ->
         if i % 1000 is 0
             console.log i, 'words processed!'
         
@@ -261,7 +256,6 @@ initWordsIndex = () ->
             AllWords.insert({word: word, number: i})
         i++
     AllWords.insert({wordCount: i})
-                    
     console.log 'Index initialization took:', (new Date()).getTime() - start.getTime(), 'ms'
 
 if Meteor.isServer
