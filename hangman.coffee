@@ -36,12 +36,12 @@ if Meteor.isClient
             canvas = document.getElementById 'canvas'
             ctx = canvas.getContext '2d'
             
-            ctx.font = 'italic 42px Lucida, sans-serif'
+            ctx.font = 'italic bold 42px Lucida, sans-serif'
             ctx.lineWidth = 2
             ctx.fillStyle = 'green'
             ctx.fillText('YOU WON!', 0, 120)
             
-            ctx.font = '24px Lucida, sans-serif'
+            ctx.font = 'bold 24px Lucida, sans-serif'
             ctx.lineWidth = 2
             ctx.fillStyle = 'blue'
             ctx.fillText('Click to play again!', 10, 160)
@@ -156,12 +156,12 @@ if Meteor.isClient
             ctx.lineTo(225,175)
             ctx.stroke()
             
-            ctx.font = 'italic 48px Lucida, sans-serif'
+            ctx.font = 'italic bold 48px Lucida, sans-serif'
             ctx.lineWidth = 2
             ctx.fillStyle = 'orange'
             ctx.fillText('YOU LOST', 0, 120)
             
-            ctx.font = '24px Lucida, sans-serif'
+            ctx.font = 'bold 24px Lucida, sans-serif'
             ctx.lineWidth = 2
             ctx.fillStyle = 'blue'
             ctx.fillText('Click to play again!', 10, 160)
