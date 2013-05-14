@@ -46,7 +46,7 @@ if Meteor.isClient
     replaceWord = (cw, newLetter) ->
         fixedLetters = userData.findOne({_id: id}).letters
         
-        fl = fixedLetters.reduce (s, l) -> s + l
+        fl = fixedLetters.reduce(((s, l) -> s + l), '')
         
         r = '^'
         cw.split('').map (l) ->
