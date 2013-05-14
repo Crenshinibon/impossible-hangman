@@ -1,0 +1,69 @@
+<head>
+    <title>impossible hangman</title>
+</head>
+
+<body>
+    {{> base}}
+</body>
+
+<template name="base">
+    <h1>Impossible Hangman!</h1>
+    {{#unless ready}}
+    <h2>Loading<h2>
+    {{else}}
+    <div class="container">
+        <div class="row">
+            <div class="span12" id="canvas-div">
+                {{#constant}}
+                <canvas id="canvas" width="250px" height="250px"/>
+                {{/constant}}
+            </div>
+        </div>
+        <div class="row">
+            <div class="span12">
+                {{>word}}
+            </div>
+        </div>
+        <div class="row">
+            <div class="span5">
+                <div class="container">
+                    <div class="row">
+                        <div class="span1">
+                            <input id="letter-input" class="span1" type="text" value='' autofocus/>
+                        </div>
+                        <label class="span4">Enter a letter (a to z, lower case)</label>
+                    </div>
+                </div>
+            </div>
+            <div class="span3">
+                <label>Fails: <b>{{fails}}</b><label>
+            </div>
+            <div class="span4">
+                <label>Letters tried: <i>{{triedLetters}}</i></label>
+            </div>
+        </div>
+        <div class="row">
+            <div class="span3">
+                <label>Current word: <i>{{currentWord}}</i></label>
+            </div>
+            <div class="span9">
+                <label>Dismissed words:
+                {{#each dismissedWords}}
+                <span class="label">{{word}}</span>
+                {{/each}}
+            </div>
+        </div>
+    </div>
+    {{/unless}}
+    
+</template>
+
+<template name="word">
+    <div class="container word">
+        <div class="row letters">
+            {{#each letters}}
+            <div class="span1 letter {{letterClass}}">{{letter}}</div>
+            {{/each}}
+        </div>
+    </div>
+</template>
