@@ -12,12 +12,15 @@ if Meteor.isClient
     getFirstWord = () ->
         wc = words.length
         randomIndex = Math.floor(Math.random() * wc)
-        words[randomIndex]
+        w = words[randomIndex]
+        unless /^[a-z]+$/.test w
+            w = getFirstWord()
+        w
 
     insertLetter = (letter) ->
         #the user inserted a new letter
         letterSeen = letter in userData.findOne({_id: id}).letters
-        if /^[a-z]/.test(letter) and not letterSeen
+        if /^[a-z]{1}/.test(letter) and not letterSeen
             handleNewLetters(letter)
             userData.update {_id: id}, {$push: {letters: letter}}
             checkWon()
@@ -61,7 +64,7 @@ if Meteor.isClient
         r = new RegExp(r)
         
         mw = words.filter (w) ->
-            r.test(w) and (w.indexOf newLetter) is -1
+            /^[a-z]+$/.test(w) and r.test(w) and (w.indexOf newLetter) is -1
             
         if mw.length > 0
             userData.update {_id: id}, {$set: {currentWord: mw[0]}, $push: {dismissedWords: cw}}
