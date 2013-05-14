@@ -117,7 +117,6 @@ if Meteor.isClient
         
         if missCount is 5
             ctx.beginPath()
-            ctx.lineCap = 'round'
             ctx.lineWidth = 5
             ctx.arc 200, 70, 20, 2 * Math.PI, 0
             ctx.stroke()
@@ -269,5 +268,7 @@ if Meteor.isServer
     Meteor.publish("allwords", () ->
         if AllWords.find().count() is 0
             initWordsIndex()
+        
         this.ready()
+        AllWords.find()
     )    
