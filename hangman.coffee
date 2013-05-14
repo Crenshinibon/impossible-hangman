@@ -1,6 +1,3 @@
-unless @AllWords
-    @AllWords = new Meteor.Collection 'allwords'
-        
 alphabet = 'abcdefghijklmnopqrstuvwxyz'
 
 if Meteor.isClient
@@ -13,9 +10,9 @@ if Meteor.isClient
         dismissedWords: []
     
     getFirstWord = () ->
-        wc = AllWords.findOne({wordCount: {$exists: true}})
-        randomIndex = Math.floor(Math.random() * wc.wordCount)
-        AllWords.findOne({number: randomIndex}).word
+        wc = words.length
+        randomIndex = Math.floor(Math.random() * wc)
+        words[randomIndex]
 
     insertLetter = (letter) ->
         #the user inserted a new letter
@@ -39,7 +36,7 @@ if Meteor.isClient
             ctx.font = 'italic bold 42px Lucida, sans-serif'
             ctx.lineWidth = 2
             ctx.fillStyle = 'green'
-            ctx.fillText('YOU WON!', 0, 120)
+            ctx.fillText('YOU WIN!', 0, 120)
             
             ctx.font = 'bold 24px Lucida, sans-serif'
             ctx.lineWidth = 2
@@ -49,24 +46,22 @@ if Meteor.isClient
     replaceWord = (cw, newLetter) ->
         fixedLetters = userData.findOne({_id: id}).letters
         
-        #build regexp
+        fl = fixedLetters.reduce (s, l) -> s + l
+        
         r = '^'
         cw.split('').map (l) ->
             if l in fixedLetters
                 r += l + '{1}'
             else
-                r += '.{1}'
+                if fl.length is 0
+                    r += '.{1}'
+                else
+                    r += '[^' + fl + ']{1}'
         r+= '$'
+        r = new RegExp(r)
         
-        q = {word: {$regex: r}}
-        mw = AllWords.find(q).map (e) ->
-            e.word
-        mw = mw.filter (w) ->
-            clean = (w.indexOf newLetter) is -1
-            fixedLetters.forEach (e) ->
-                if (w.indexOf e) isnt -1
-                    clean = false
-            clean
+        mw = words.filter (w) ->
+            r.test(w) and (w.indexOf newLetter) is -1
             
         if mw.length > 0
             userData.update {_id: id}, {$set: {currentWord: mw[0]}, $push: {dismissedWords: cw}}
@@ -131,28 +126,28 @@ if Meteor.isClient
         if missCount is 7
             ctx.beginPath()
             ctx.lineWidth = 4
-            ctx.moveTo(200,95)
+            ctx.moveTo(205,95)
             ctx.lineTo(225,130)
             ctx.stroke()
             
         if missCount is 8
             ctx.beginPath()
             ctx.lineWidth = 4
-            ctx.moveTo(200,95)
+            ctx.moveTo(195,95)
             ctx.lineTo(175,130)
             ctx.stroke()
         
         if missCount is 9
             ctx.beginPath()
             ctx.lineWidth = 6
-            ctx.moveTo(200,140)
+            ctx.moveTo(195,140)
             ctx.lineTo(175,175)
             ctx.stroke()
         
         if missCount is 10
             ctx.beginPath()
             ctx.lineWidth = 6
-            ctx.moveTo(200,140)
+            ctx.moveTo(205,140)
             ctx.lineTo(225,175)
             ctx.stroke()
             
@@ -175,9 +170,6 @@ if Meteor.isClient
             ctx.lineTo(200,155)
             ctx.stroke()
         
-    
-    Template.base.ready = () ->
-        Meteor.subscribe('allwords').ready()
     
     Template.base.triedLetters = () ->
         userData.findOne({_id: id}).letters
@@ -202,7 +194,8 @@ if Meteor.isClient
             v = e.target.value
             if v.length is 1
                 insertLetter(v)
-            
+            else if v.length > 1
+                e.target.value = v[v.length - 1]
             e.target.select()
         'click canvas': (e, t) ->
             userData.remove({_id: id})
@@ -242,27 +235,3 @@ if Meteor.isClient
             i++
             
         out
-
-initWordsIndex = () ->
-    start = new Date
-    i = 0
-    raw_words.forEach (word) ->
-        if i % 1000 is 0
-            console.log i, 'words processed!'
-        
-        word = word.toLowerCase()
-        length = word.length
-        if length in [1..12] and /^[a-z]/.test word
-            AllWords.insert({word: word, number: i})
-        i++
-    AllWords.insert({wordCount: i})
-    console.log 'Index initialization took:', (new Date()).getTime() - start.getTime(), 'ms'
-
-if Meteor.isServer
-    Meteor.publish("allwords", () ->
-        if AllWords.find().count() is 0
-            initWordsIndex()
-        
-        this.ready()
-        AllWords.find()
-    )    

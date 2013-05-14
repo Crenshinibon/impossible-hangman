@@ -1,5 +1,5 @@
 <head>
-    <title>impossible hangman</title>
+    <title>Impossible Hangman</title>
 </head>
 
 <body>
@@ -8,9 +8,6 @@
 
 <template name="base">
     <h1>Impossible Hangman!</h1>
-    {{#unless ready}}
-    <h2>Loading<h2>
-    {{else}}
     <div class="container">
         <div class="row">
             <div class="span12" id="canvas-div">
@@ -54,8 +51,6 @@
             </div>
         </div>
     </div>
-    {{/unless}}
-    
 </template>
 
 <template name="word">
