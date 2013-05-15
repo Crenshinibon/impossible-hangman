@@ -67,7 +67,8 @@ if Meteor.isClient
             /^[a-z]+$/.test(w) and r.test(w) and (w.indexOf newLetter) is -1
             
         if mw.length > 0
-            userData.update {_id: id}, {$set: {currentWord: mw[0]}, $push: {dismissedWords: cw}}
+            randomIndex = Math.floor(Math.random() * mw.length)
+            userData.update {_id: id}, {$set: {currentWord: mw[randomIndex]}, $push: {dismissedWords: cw}}
             true
         else
             false
@@ -209,7 +210,6 @@ if Meteor.isClient
                 currentWord: 'NONE'
                 dismissedWords: []
             e.target.getContext('2d').clearRect(0,0,250,250)
-            
     )
     
     Template.word.letters = () ->
