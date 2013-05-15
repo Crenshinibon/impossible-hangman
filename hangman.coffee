@@ -1,5 +1,3 @@
-alphabet = 'abcdefghijklmnopqrstuvwxyz'
-
 if Meteor.isClient
     userData = new Meteor.Collection(null)
     id = userData.insert
